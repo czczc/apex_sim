@@ -7,6 +7,8 @@
 #ifndef DetectorConstruction_h
 #define DetectorConstruction_h 1
 
+class G4GenericMessenger;
+
 #include "G4VUserDetectorConstruction.hh"
 #include "G4Box.hh"
 #include "G4SubtractionSolid.hh"
@@ -32,12 +34,17 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 public:
 
   DetectorConstruction();
-  DetectorConstruction(double size);
   ~DetectorConstruction();
 
-  G4VPhysicalVolume* Construct();
+  G4VPhysicalVolume* Construct() override;
+  void ConstructSDandField() override;
+
     
 private:
+  G4bool fCheckOverlap;
+  G4GenericMessenger *fMessenger;
+  G4double fScYield;
+  G4bool fCerenkovOn;
 
   G4double fthickness;
 
@@ -98,6 +105,9 @@ private:
   G4VPhysicalVolume* fPhysiVol;
   G4LogicalVolume*   fLogicVol;  
   G4Box*             fSolidVol;
+
+  G4LogicalVolume *fLogicArapuca, *fLogicArapucaShort;
+
 
   void DefineMaterials();
   G4VPhysicalVolume* ConstructLine();     
