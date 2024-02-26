@@ -1,13 +1,11 @@
-// Module 3 APEX standalone light simulation
+// Module 3 simulation
 // Authors: L. Paulucci & F. Marinho
 // Date: 7th October 2022
 //
-// Added modifications should be reported in pdunevd.cc header comments
+// Added modifications should be reported in arapuca.cc header comments
 
 #ifndef DetectorConstruction_h
 #define DetectorConstruction_h 1
-
-class G4GenericMessenger;
 
 #include "G4VUserDetectorConstruction.hh"
 #include "G4Box.hh"
@@ -34,17 +32,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 public:
 
   DetectorConstruction();
+  DetectorConstruction(double size);
   ~DetectorConstruction();
 
-  G4VPhysicalVolume* Construct() override;
-  void ConstructSDandField() override;
-
+  G4VPhysicalVolume* Construct();
     
 private:
-  G4bool fCheckOverlap;
-  G4GenericMessenger *fMessenger;
-  G4double fScYield;
-  G4bool fCerenkovOn;
 
   G4double fthickness;
 
@@ -61,6 +54,10 @@ private:
   G4double      fCryostat_x;
   G4double      fCryostat_y;
   G4double      fCryostat_z;
+  G4double      fColdSkinThickness;
+  G4double      fShieldThickness;
+  G4double      fWoodThickness;
+  G4double      fWarmSkinThickness;
   G4double      fFC_x;
   G4double      fFC_y;
   G4double      fFC_z;
@@ -84,18 +81,21 @@ private:
   G4double fvert_bar_x;
   G4double fvert_bar_y;
   G4double fvert_bar_z;
-  
-  
+    
 // Materials
 
   G4Material*   fDefaultMaterial;
   G4Material*   fSteel;
+  G4Material*   fDUNESteel;
   G4Material*   fAluminium;
   G4Material*   fG10;
   G4Material*   fBase;
   G4Material*   facrylic;
   G4Material*   fPTP;
-
+  G4Material*   fMylar;  
+  G4Material*   fShieldMater;
+  G4Material*   fWoodMater;
+  
 // Volumes
 
   G4VPhysicalVolume* fPhysiWorld;
@@ -106,9 +106,9 @@ private:
   G4LogicalVolume*   fLogicVol;  
   G4Box*             fSolidVol;
 
-  G4LogicalVolume *fLogicArapuca, *fLogicArapucaShort;
-
-
+  G4LogicalVolume*   fLogicShield;
+  G4LogicalVolume*   fLogicWood;
+  
   void DefineMaterials();
   G4VPhysicalVolume* ConstructLine();     
 

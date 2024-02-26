@@ -32,7 +32,7 @@
 /gui/addButton gun "proton"  "/gun/particle proton"
 /gui/addButton gun "K+"  "/gun/particle kaon+"
 /gui/addButton gun "pi+"  "/gun/particle pi+"
-/gui/addButton gun "pi0"     "/gun/particle pi0"
+/gui/addButton gun "gamma"     "/gun/particle gamma"
 
 
 # Photon menu
