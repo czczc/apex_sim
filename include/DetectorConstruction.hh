@@ -37,7 +37,7 @@ public:
 
   G4VPhysicalVolume* Construct();
     
-// private:
+// // private:
 
   G4double fthickness;
 

@@ -271,8 +271,8 @@ void DetectorConstruction::DefineMaterials()
   fMylar = Mylar;
   
   // DISPLAY MATERIALS
-  G4cout << G4endl << *(G4Material::GetMaterialTable()) << G4endl;
-  G4cout << " " << G4endl;
+//   G4cout << G4endl << *(G4Material::GetMaterialTable()) << G4endl;
+//   G4cout << " " << G4endl;
 }
 
 G4VPhysicalVolume* DetectorConstruction::ConstructLine()
@@ -313,7 +313,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructLine()
                                  fLogicShell,     //its logical volume
                                  fPhysiWorld,    	//its mother  volume
                                  false,			//no boolean operation
-						    0, true);
+						    0, false);
 
   //foam
   fShieldThickness = 0.776 ; //m 
@@ -329,7 +329,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructLine()
                            "Foam",                  //name
 			     fLogicWorld,                      //mother  volume
                            false,                       //no boolean operation
-			     0, true);                          //copy number
+			     0, false);                          //copy number
 
   //wood
   fWoodThickness = 0.024; //m
@@ -346,7 +346,7 @@ G4VPhysicalVolume* DetectorConstruction::ConstructLine()
                            "Wood",                  //name
 			   fLogicWorld,                      //mother  volume
                            false,                       //no boolean operation
-			     0, true);                          //copy number
+			     0, false);                          //copy number
 
   // warmskin
   fWarmSkinThickness =  0.024 ; //m
@@ -357,8 +357,8 @@ G4VPhysicalVolume* DetectorConstruction::ConstructLine()
                                  fLogicShellW,     //its logical volume
                                  fPhysiWorld,    	//its mother  volume
                                  false,			//no boolean operation
-						    0, true);
-    std::cout << "Checking units on warm CryoSkin. xout size [mm]: " << (fCryostat_x/2+fWarmSkinThickness+fWoodThickness+fShieldThickness+fColdSkinThickness+Offset)*m << std::endl;
+						    0, false);
+//     std::cout << "Checking units on warm CryoSkin. xout size [mm]: " << (fCryostat_x/2+fWarmSkinThickness+fWoodThickness+fShieldThickness+fColdSkinThickness+Offset)*m << std::endl;
 
 
 	   
@@ -372,14 +372,14 @@ G4VPhysicalVolume* DetectorConstruction::ConstructLine()
 			    fPhysiWorld,
 			    true,
 			    0,
-			    true);
+			    false);
 
   pbulk = new G4PVPlacement(0,G4ThreeVector(-1.0*um,-1.1*m,0.0*m),"bulk",
 			    lbulk,
 			    fPhysiWorld,
 			    true,
 			    1,
-			    true);*/
+			    false);*/
 
 
   
@@ -422,7 +422,7 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
     cxpos=(i-1.5)*widthCathode;
     for(int k = 0; k<20; k++){
       czpos=(k-9.5)*lengthCathode;
-      G4PVPlacement* cathode_cp  = new G4PVPlacement(0,G4ThreeVector(cxpos*m,0,czpos*m), "Cathode", fLogicCathode, fPhysiWorld, false, cnt, true);
+      G4PVPlacement* cathode_cp  = new G4PVPlacement(0,G4ThreeVector(cxpos*m,0,czpos*m), "Cathode", fLogicCathode, fPhysiWorld, false, cnt, false);
       cnt++;
     }
   }
@@ -435,7 +435,7 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
                                  fPhysiWorld,    	//its mother  volume
                                  false,			//no boolean operation
 				 0,
-				 true); //check for overlaps
+				 false); //check for overlaps
 
   G4LogicalVolume* fLogicAnodeB = new G4LogicalVolume(fSolidAnode,fSteel,"AnodeB");
   G4VPhysicalVolume* fPhysiAnodeB = new G4PVPlacement(0,G4ThreeVector(0,-(fCryostat_y/2.0+fthickness/2)*m,0),"AnodeB",
@@ -443,7 +443,7 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
                                  fPhysiWorld,    	//its mother  volume
                                  false,			//no boolean operation
 				 0,
-				 true); //check for overlaps   
+				 false); //check for overlaps   
 
   //FC Structure
 
@@ -469,29 +469,29 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
   
   for(int i=0; i<ncols; i++){    
     for(int j=0; j<nrows; j++){
-      G4cout << "i: " << i << " j: " << j << G4endl;
+//       G4cout << "i: " << i << " j: " << j << G4endl;
       ypos=-fCryostat_y/2.0+(j+0.5)*(fCryostat_y/2.0/nrows);
       zpos=-fCryostat_z/2.0+(i+0.5)*2*fFCOut_z;
       G4PVPlacement* ph_cp = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset+fFCOut_x-0.015)*m,ypos*m,zpos*m),
-						"FieldCage", fLogicFC, fPhysiWorld, false, cnt, true);
+						"FieldCage", fLogicFC, fPhysiWorld, false, cnt, false);
       cnt++;
       ypos=fCryostat_y/2.0-(j+0.5)*(fCryostat_y/2.0/nrows);
       zpos=-fCryostat_z/2.0+(i+0.5)*2*fFCOut_z;
       G4PVPlacement* ph_cp2 = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset+fFCOut_x-0.015)*m,ypos*m,zpos*m),
-						"FieldCage", fLogicFC, fPhysiWorld, false, cnt, true);
-      G4cout << "ypos: " << ypos << " zpos: " << zpos << G4endl;
+						"FieldCage", fLogicFC, fPhysiWorld, false, cnt, false);
+//       G4cout << "ypos: " << ypos << " zpos: " << zpos << G4endl;
       cnt++;
 
       ypos=-fCryostat_y/2.0+(j+0.5)*(fCryostat_y/2.0/nrows);
       zpos=-fCryostat_z/2.0+(i+0.5)*2*fFCOut_z;
       G4PVPlacement* ph_cp3 = new G4PVPlacement(fcMirror,G4ThreeVector(-(fFC_x/2.-fAra_offset+fFCOut_x-0.015)*m,ypos*m,zpos*m),
-						"FieldCage", fLogicFC, fPhysiWorld, false, cnt, true);
+						"FieldCage", fLogicFC, fPhysiWorld, false, cnt, false);
       cnt++;
       ypos=fCryostat_y/2.0-(j+0.5)*(fCryostat_y/2.0/nrows);
       zpos=-fCryostat_z/2.0+(i+0.5)*2*fFCOut_z;
       G4PVPlacement* ph_cp4 = new G4PVPlacement(fcMirror,G4ThreeVector(-(fFC_x/2.-fAra_offset+fFCOut_x-0.015)*m,ypos*m,zpos*m),
-						"FieldCage", fLogicFC, fPhysiWorld, false, cnt, true);
-      G4cout << "ypos: " << ypos << " zpos: " << zpos << G4endl;
+						"FieldCage", fLogicFC, fPhysiWorld, false, cnt, false);
+//       G4cout << "ypos: " << ypos << " zpos: " << zpos << G4endl;
       cnt++;   
     }
   }
@@ -516,26 +516,26 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
       xpos=-fFC_x/2.0+fFCOut_z/2+(i+0.5)*2*fFCOut_z;
       zpos=fCryostat_z/2.0-fAra_offset+fFCOut_x-0.015;
       G4PVPlacement* ph_cp5 = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,zpos*m),
-						"FieldCageS", fLogicFC, fPhysiWorld, false, cnt, true);
+						"FieldCageS", fLogicFC, fPhysiWorld, false, cnt, false);
       cnt++;
       ypos=-(-fCryostat_y/2.0+(j+0.5)*(fCryostat_y/2.0/nrows));
       xpos=-fFC_x/2.0+fFCOut_z/2+(i+0.5)*2*fFCOut_z;
       zpos=fCryostat_z/2.0-fAra_offset+fFCOut_x-0.015;
       G4PVPlacement* ph_cp6 = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,zpos*m),
 
-						"FieldCageS", fLogicFC, fPhysiWorld, false, cnt, true);
+						"FieldCageS", fLogicFC, fPhysiWorld, false, cnt, false);
       cnt++;      
       ypos=-fCryostat_y/2.0+(j+0.5)*(fCryostat_y/2.0/nrows);
       xpos=-fFC_x/2.0+fFCOut_z/2+(i+0.5)*2*fFCOut_z;
       zpos=-(fCryostat_z/2.0-fAra_offset+fFCOut_x-0.015);
       G4PVPlacement* ph_cp7 = new G4PVPlacement(lSh,G4ThreeVector(xpos*m,ypos*m,zpos*m),
-						"FieldCageS", fLogicFC, fPhysiWorld, false, cnt, true);
+						"FieldCageS", fLogicFC, fPhysiWorld, false, cnt, false);
       cnt++;      
       ypos=-(-fCryostat_y/2.0+(j+0.5)*(fCryostat_y/2.0/nrows));
       xpos=-fFC_x/2.0+fFCOut_z/2+(i+0.5)*2*fFCOut_z;
       zpos=-(fCryostat_z/2.0-fAra_offset+fFCOut_x-0.015);
       G4PVPlacement* ph_cp8 = new G4PVPlacement(lSh,G4ThreeVector(xpos*m,ypos*m,zpos*m),
-						"FieldCageS", fLogicFC, fPhysiWorld, false, cnt, true);
+						"FieldCageS", fLogicFC, fPhysiWorld, false, cnt, false);
       cnt++;
       
      }
@@ -561,23 +561,23 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
     
     zpos=(-fCryostat_z/2.0) + (i+0.5)*darapuca; //in m;
     for(int j=0; j<nrows;j++){
-      std::cout << "ypos: " << ypos << " zpos: " << zpos << std::endl;
+//       std::cout << "ypos: " << ypos << " zpos: " << zpos << std::endl;
       
-      ptp_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset)*m+fAra_x*m+fptp_width/2,ypos*m,zpos*m),"PTP_film", fLogicPTP, fPhysiWorld, false,ptp_cnt, true);
+      ptp_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset)*m+fAra_x*m+fptp_width/2,ypos*m,zpos*m),"PTP_film", fLogicPTP, fPhysiWorld, false,ptp_cnt,  false);
       ptp_cnt++;
-      ptp_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset)*m-fAra_x*m-fptp_width/2,ypos*m,zpos*m),"PTP_film", fLogicPTP, fPhysiWorld, false,ptp_cnt, true);
+      ptp_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset)*m-fAra_x*m-fptp_width/2,ypos*m,zpos*m),"PTP_film", fLogicPTP, fPhysiWorld, false,ptp_cnt, false);
       ptp_cnt++;
       
       name = "ArapucaR"; name.append(std::to_string(i+1)); name.append("_"); name.append(std::to_string(j+1));
       physname = "fPhysArapucaR"; physname.append(std::to_string(i+1)); physname.append("_"); physname.append(std::to_string(j+1));
-      new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x/2)*m,ypos*m,zpos*m),name.c_str(), fLogicArapuca, fPhysiWorld, false,0, true);
+      new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x/2)*m,ypos*m,zpos*m),name.c_str(), fLogicArapuca, fPhysiWorld, false,0, false);
       name2 = "ArapucaL"; name2.append(std::to_string(i+1)); name2.append("_"); name2.append(std::to_string(j+1));
       physname2 = "fPhysArapucaL"; physname2.append(std::to_string(i+1)); physname2.append("_"); physname2.append(std::to_string(j+1));
-      new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset+fAra_x/2)*m,ypos*m,zpos*m),name2.c_str(), fLogicArapuca, fPhysiWorld, false,0, true);
+      new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset+fAra_x/2)*m,ypos*m,zpos*m),name2.c_str(), fLogicArapuca, fPhysiWorld, false,0, false);
 
-      myl_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset)*m-fptp_width/2,ypos*m,zpos*m),"MYL_film", fLogicAB, fPhysiWorld, false,myl_cnt, true);
+      myl_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset)*m-fptp_width/2,ypos*m,zpos*m),"MYL_film", fLogicAB, fPhysiWorld, false,myl_cnt, false);
       myl_cnt++;
-      myl_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset)*m+fptp_width/2,ypos*m,zpos*m),"MYL_film", fLogicAB, fPhysiWorld, false,myl_cnt, true);
+      myl_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset)*m+fptp_width/2,ypos*m,zpos*m),"MYL_film", fLogicAB, fPhysiWorld, false,myl_cnt, false);
       myl_cnt++;
       
       ypos+=(fAra_y+fAras_yspacing);
@@ -586,23 +586,23 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
     ypos=(fCryostat_y/2.0) - (fCryostat_y/2.0 - (nrows*fAra_y+(nrows-1)*fAras_yspacing))/2 - fAra_y/2; //in m
     
     for(int j=nrows; j<2*nrows;j++){
-      std::cout << "ypos: " << ypos << " zpos: " << zpos << std::endl;
+//       std::cout << "ypos: " << ypos << " zpos: " << zpos << std::endl;
       
-      ptp_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset)*m+fAra_x*m+fptp_width/2,ypos*m,zpos*m),"PTP_film", fLogicPTP, fPhysiWorld, false,ptp_cnt, true);
+      ptp_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset)*m+fAra_x*m+fptp_width/2,ypos*m,zpos*m),"PTP_film", fLogicPTP, fPhysiWorld, false,ptp_cnt, false);
       ptp_cnt++;
-      ptp_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset)*m-fAra_x*m-fptp_width/2,ypos*m,zpos*m),"PTP_film", fLogicPTP, fPhysiWorld, false,ptp_cnt, true);
+      ptp_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset)*m-fAra_x*m-fptp_width/2,ypos*m,zpos*m),"PTP_film", fLogicPTP, fPhysiWorld, false,ptp_cnt, false);
       ptp_cnt++;
       
       name = "ArapucaR"; name.append(std::to_string(i+1)); name.append("_"); name.append(std::to_string(j+1));
       physname = "fPhysArapucaR"; physname.append(std::to_string(i+1)); physname.append("_"); physname.append(std::to_string(j+1));
-      new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x/2)*m,ypos*m,zpos*m),name.c_str(), fLogicArapuca, fPhysiWorld, false,0, true);
+      new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x/2)*m,ypos*m,zpos*m),name.c_str(), fLogicArapuca, fPhysiWorld, false,0, false);
       name2 = "ArapucaL"; name2.append(std::to_string(i+1)); name2.append("_"); name2.append(std::to_string(j+1));
       physname2 = "fPhysArapucaL"; physname2.append(std::to_string(i+1)); physname2.append("_"); physname2.append(std::to_string(j+1));
-      new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset+fAra_x/2)*m,ypos*m,zpos*m),name2.c_str(), fLogicArapuca, fPhysiWorld, false,0, true);
+      new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset+fAra_x/2)*m,ypos*m,zpos*m),name2.c_str(), fLogicArapuca, fPhysiWorld, false,0, false);
 
-      myl_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset)*m-fptp_width/2,ypos*m,zpos*m),"MYL_film", fLogicAB, fPhysiWorld, false,myl_cnt, true);
+      myl_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset)*m-fptp_width/2,ypos*m,zpos*m),"MYL_film", fLogicAB, fPhysiWorld, false,myl_cnt, false);
       myl_cnt++;
-      myl_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset)*m+fptp_width/2,ypos*m,zpos*m),"MYL_film", fLogicAB, fPhysiWorld, false,myl_cnt, true);
+      myl_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset)*m+fptp_width/2,ypos*m,zpos*m),"MYL_film", fLogicAB, fPhysiWorld, false,myl_cnt, false);
       myl_cnt++;
       
       ypos-=(fAra_y+fAras_yspacing);
@@ -628,24 +628,24 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
   for(int i=0; i<ncols; i++){
     ypos=-fCryostat_y/2.0 + (fCryostat_y/2.0 - (nrows*fAra_y+(nrows-1)*fAras_yspacing))/2 + fAra_y/2; //in m
     xpos = -fFC_x/2+(fFC_x-(ncols*darapuca+(ncols-1)*fAras_yspacing))/2.0 + darapuca/2 + i*(darapuca+fAras_yspacing);
-    std::cout << xpos << std::endl;
+//     std::cout << xpos << std::endl;
     for(int j=0; j<nrows;j++){
       
-      ptps_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset)*m-fAra_x*m-fptp_width/2.0),"PTPs_film", fLogicPTPs, fPhysiWorld, false,ptps_cnt, true);
+      ptps_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset)*m-fAra_x*m-fptp_width/2.0),"PTPs_film", fLogicPTPs, fPhysiWorld, false,ptps_cnt, false);
       ptps_cnt++;
-      ptps_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset)*m+fAra_x*m+fptp_width/2.0),"PTPs_film", fLogicPTPs, fPhysiWorld, false,ptps_cnt, true);
+      ptps_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset)*m+fAra_x*m+fptp_width/2.0),"PTPs_film", fLogicPTPs, fPhysiWorld, false,ptps_cnt, false);
       ptps_cnt++;
       
       name = "ArapucaF"; name.append(std::to_string(i+1)); name.append("_"); name.append(std::to_string(j+1));
       physname = "fPhysArapucaF"; physname.append(std::to_string(i+1)); physname.append("_"); physname.append(std::to_string(j+1));
-      new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset-fAra_x/2)*m),name.c_str(), fLogicArapucaShort, fPhysiWorld, false,0, true);
+      new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset-fAra_x/2)*m),name.c_str(), fLogicArapucaShort, fPhysiWorld, false,0, false);
       name2 = "ArapucaB"; name2.append(std::to_string(i+1)); name2.append("_"); name2.append(std::to_string(j+1));
       physname2 = "fPhysArapucaB"; physname2.append(std::to_string(i+1)); physname2.append("_"); physname2.append(std::to_string(j+1));
-      new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset+fAra_x/2)*m),name2.c_str(), fLogicArapucaShort, fPhysiWorld, false,0, true);
+      new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset+fAra_x/2)*m),name2.c_str(), fLogicArapucaShort, fPhysiWorld, false,0, false);
 
-      myls_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset+fptp_width/2.0)*m),"MYL_film", fLogicABs, fPhysiWorld, false,myls_cnt, true);
+      myls_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset+fptp_width/2.0)*m),"MYL_film", fLogicABs, fPhysiWorld, false,myls_cnt, false);
       myls_cnt++;
-      myls_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset-fptp_width/2.0)*m),"MYL_film", fLogicABs, fPhysiWorld, false,myls_cnt, true);
+      myls_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset-fptp_width/2.0)*m),"MYL_film", fLogicABs, fPhysiWorld, false,myls_cnt, false);
       myls_cnt++;
       
       ypos+=(fAra_y+fAras_yspacing);
@@ -654,21 +654,21 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
     ypos=fCryostat_y/2.0 - (fCryostat_y/2.0 - (nrows*fAra_y+(nrows-1)*fAras_yspacing))/2 - fAra_y/2; //in m
     for(int j=nrows; j<2*nrows;j++){
       
-      ptps_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset)*m-fAra_x*m-fptp_width/2.0),"PTPs_film", fLogicPTPs, fPhysiWorld, false,ptps_cnt, true);
+      ptps_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset)*m-fAra_x*m-fptp_width/2.0),"PTPs_film", fLogicPTPs, fPhysiWorld, false,ptps_cnt, false);
       ptps_cnt++;
-      ptps_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset)*m+fAra_x*m+fptp_width/2.0),"PTPs_film", fLogicPTPs, fPhysiWorld, false,ptps_cnt, true);
+      ptps_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset)*m+fAra_x*m+fptp_width/2.0),"PTPs_film", fLogicPTPs, fPhysiWorld, false,ptps_cnt, false);
       ptps_cnt++;
       
       name = "ArapucaF"; name.append(std::to_string(i+1)); name.append("_"); name.append(std::to_string(j+1));
       physname = "fPhysArapucaF"; physname.append(std::to_string(i+1)); physname.append("_"); physname.append(std::to_string(j+1));
-      new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset-fAra_x/2)*m),name.c_str(), fLogicArapucaShort, fPhysiWorld, false,0, true);
+      new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset-fAra_x/2)*m),name.c_str(), fLogicArapucaShort, fPhysiWorld, false,0, false);
       name2 = "ArapucaB"; name2.append(std::to_string(i+1)); name2.append("_"); name2.append(std::to_string(j+1));
       physname2 = "fPhysArapucaB"; physname2.append(std::to_string(i+1)); physname2.append("_"); physname2.append(std::to_string(j+1));
-      new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset+fAra_x/2)*m),name2.c_str(), fLogicArapucaShort, fPhysiWorld, false,0, true);
+      new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset+fAra_x/2)*m),name2.c_str(), fLogicArapucaShort, fPhysiWorld, false,0, false);
 
-      myls_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset+fptp_width/2.0)*m),"MYL_film", fLogicABs, fPhysiWorld, false,myls_cnt, true);
+      myls_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(fFC_z/2.-fAra_offset+fptp_width/2.0)*m),"MYL_film", fLogicABs, fPhysiWorld, false,myls_cnt, false);
       myls_cnt++;
-      myls_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset-fptp_width/2.0)*m),"MYL_film", fLogicABs, fPhysiWorld, false,myls_cnt, true);
+      myls_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,ypos*m,(-fFC_z/2.+fAra_offset-fptp_width/2.0)*m),"MYL_film", fLogicABs, fPhysiWorld, false,myls_cnt, false);
       myls_cnt++;
       
       ypos-=(fAra_y+fAras_yspacing);
@@ -685,15 +685,15 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
   
   for(int i=0; i<ncols; i++){
     zpos = 2*fAra_z*(i+0.5) -fFC_z/2;
-    //std::cout << (fFC_x/2.-fAra_offset-fAra_x-fvert_bar_x/2) <<" "<< zpos << std::endl;    
-    //vbar_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width,0*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, true);
-    vbar_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width,fFC_y/4*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, true);
+//     //std::cout << (fFC_x/2.-fAra_offset-fAra_x-fvert_bar_x/2) <<" "<< zpos << std::endl;    
+    //vbar_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width,0*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, false);
+    vbar_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width,fFC_y/4*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, false);
     vbar_cnt++;
-    vbar_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset+fAra_x+fvert_bar_x/2)*m+fptp_width,fFC_y/4*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, true);
+    vbar_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset+fAra_x+fvert_bar_x/2)*m+fptp_width,fFC_y/4*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, false);
     vbar_cnt++;
-    vbar_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width,-fFC_y/4*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, true);
+    vbar_phys = new G4PVPlacement(0,G4ThreeVector((fFC_x/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width,-fFC_y/4*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, false);
     vbar_cnt++;
-    vbar_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset+fAra_x+fvert_bar_x/2)*m+fptp_width,-fFC_y/4*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, true);
+    vbar_phys = new G4PVPlacement(0,G4ThreeVector((-fFC_x/2.+fAra_offset+fAra_x+fvert_bar_x/2)*m+fptp_width,-fFC_y/4*m,zpos*m),"vbar", fLogicVerticalBar, fPhysiWorld, false, vbar_cnt, false);
     vbar_cnt++;
   }
 
@@ -711,15 +711,15 @@ G4SubtractionSolid* Cathode13 = new G4SubtractionSolid("Cathode13", Cathode12, f
     //zpos;
     xpos = -fFC_x/2+(fFC_x-(ncolx*darapuca+(ncolx-1)*fAras_yspacing))/2.0 + darapuca + fAras_yspacing/2 + i*2*(darapuca + fAras_yspacing);
     
-    //std::cout << xpos  <<" "<< zpos << std::endl;    
+//     //std::cout << xpos  <<" "<< zpos << std::endl;    
     
-    vbar_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,fFC_y/4*m,(fFC_z/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width),"vbars", fLogicVerticalBarS, fPhysiWorld, false, vbar_cnt, true);
+    vbar_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,fFC_y/4*m,(fFC_z/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width),"vbars", fLogicVerticalBarS, fPhysiWorld, false, vbar_cnt, false);
     vbar_cnt++;
-    vbar_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,fFC_y/4*m,(-fFC_z/2.+fAra_offset+fAra_x+fvert_bar_x/2)*m+fptp_width),"vbars", fLogicVerticalBarS, fPhysiWorld, false, vbar_cnt, true);
+    vbar_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,fFC_y/4*m,(-fFC_z/2.+fAra_offset+fAra_x+fvert_bar_x/2)*m+fptp_width),"vbars", fLogicVerticalBarS, fPhysiWorld, false, vbar_cnt, false);
     vbar_cnt++;
-    vbar_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,-fFC_y/4*m,(fFC_z/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width),"vbars", fLogicVerticalBarS, fPhysiWorld, false, vbar_cnt, true);
+    vbar_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,-fFC_y/4*m,(fFC_z/2.-fAra_offset-fAra_x-fvert_bar_x/2)*m-fptp_width),"vbars", fLogicVerticalBarS, fPhysiWorld, false, vbar_cnt, false);
     vbar_cnt++;
-    vbar_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,-fFC_y/4*m,(-fFC_z/2.+fAra_offset+fAra_x+fvert_bar_x/2)*m+fptp_width),"vbars", fLogicVerticalBarS, fPhysiWorld, false, vbar_cnt, true);
+    vbar_phys = new G4PVPlacement(rSh,G4ThreeVector(xpos*m,-fFC_y/4*m,(-fFC_z/2.+fAra_offset+fAra_x+fvert_bar_x/2)*m+fptp_width),"vbars", fLogicVerticalBarS, fPhysiWorld, false, vbar_cnt, false);
     vbar_cnt++;
     
   }
