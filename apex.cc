@@ -1,5 +1,5 @@
 #include "ActionInitialization.hh"
-#include "DetectorConstruction.hh"
+#include "LArDetectorConstruction.hh"
 #include "PhysicsList.hh"
 
 #include "G4RunManagerFactory.hh"
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
   //---------------------------------------------------------------
 
 
-  DetectorConstruction *det = new DetectorConstruction;
+  LArDetectorConstruction *det = new LArDetectorConstruction;
   runManager->SetUserInitialization(det);
   
   runManager->SetUserInitialization(new ActionInitialization(det));

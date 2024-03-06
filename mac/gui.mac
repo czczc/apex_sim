@@ -3,7 +3,7 @@
 # It has no effect with G4UIterminal.
 
 # Process vis.mac (and draw geometry)
-/control/execute vis.mac
+# /control/execute vis.mac
 
 # File menu :
 /gui/addMenu file File
