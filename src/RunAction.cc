@@ -5,31 +5,22 @@
 
 
 RunAction::RunAction() 
-{   
-}
-
-
-RunAction::~RunAction()
-{
-}
-
-
-void RunAction::BeginOfRunAction(const G4Run* run)
-{
-   
-
-  G4cout << "### Run " << run->GetRunID() << " start." << G4endl;
-  
+{  
   G4AnalysisManager* man = G4AnalysisManager::Instance();
+
+  man->SetDefaultFileType("root");
+  man->SetNtupleMerging(true);
+  man->SetVerboseLevel(0);
+  man->SetFileName("out/sim");
   
   // G4cout << "Using " << man->GetType() << " analysis manager" << G4endl;
 
   // Open an output file
-  man->OpenFile("out/sim.root");
-  man->SetVerboseLevel(1);
-  man->SetNtupleMerging(true);
+  // man->OpenFile("out/sim.root");
+  // man->SetVerboseLevel(1);
+  // man->SetNtupleMerging(true);
 
-  // man->SetFirstNtupleId(1);
+  man->SetFirstNtupleId(0);
 
   // man->CreateNtuple("Run", "truth info");
   // man->CreateNtupleIColumn("evtID");
@@ -49,7 +40,7 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   // man->CreateNtupleIColumn("inter");
 
   man->CreateNtuple("OP", "OpticalPhotons");
-  man->CreateNtupleIColumn("event");
+  man->CreateNtupleIColumn("evtID");
   man->CreateNtupleDColumn("x");
   man->CreateNtupleDColumn("y");
   man->CreateNtupleDColumn("z");
@@ -59,13 +50,26 @@ void RunAction::BeginOfRunAction(const G4Run* run)
   man->FinishNtuple(0);
 
   man->CreateNtuple("Hits", "Hits");
-  man->CreateNtupleIColumn("event");
+  man->CreateNtupleIColumn("evtID");
   man->CreateNtupleDColumn("x");
   man->CreateNtupleDColumn("y");
   man->CreateNtupleDColumn("z");
   man->CreateNtupleDColumn("t");
   man->FinishNtuple(1);
-  
+   
+}
+
+
+RunAction::~RunAction()
+{
+}
+
+
+void RunAction::BeginOfRunAction(const G4Run* run)
+{
+    G4cout << "### Run " << run->GetRunID() << " start." << G4endl;
+    auto man = G4AnalysisManager::Instance();
+		man->OpenFile();
 }
 
 

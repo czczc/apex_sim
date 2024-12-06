@@ -53,9 +53,10 @@ void EventAction::EndOfEventAction(const G4Event* evt)
   // }
   
   G4int evtID = evt->GetEventID();
+  G4cout << "Event " << evtID << " done." << G4endl;
 
 
-  G4AnalysisManager* man = G4AnalysisManager::Instance();
+  auto man = G4AnalysisManager::Instance();
 
   man->FillNtupleIColumn(0, 0, evtID);
   // man->FillNtupleIColumn(0, 1, nTrj);
