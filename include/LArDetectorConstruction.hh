@@ -8,8 +8,12 @@
 #define LArDetectorConstruction_h 1
 
 #include "DetectorConstruction.hh"
+#include "globals.hh" // For G4bool, etc.
 
+// Forward declarations
 class G4GenericMessenger;
+class G4LogicalVolume;
+class SensitiveDetector;
 
 class LArDetectorConstruction : public DetectorConstruction
 {
@@ -21,6 +25,7 @@ public:
   G4VPhysicalVolume* Construct();
 
   void UpdateMaterials();
+  virtual void ConstructSDandField(); // Override SD method
     
   G4double fScYield; // photons per MeV
 
