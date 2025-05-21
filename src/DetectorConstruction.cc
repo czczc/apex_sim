@@ -236,8 +236,10 @@ void DetectorConstruction::DefineMaterials()
 
   double m_ptp = 1e6;
 
-  G4double ptp_l[ptp_a_entries] =
-    {m_ptp*c_ptp, m_ptp*c_ptp, m_ptp*c_ptp, m_ptp*c_ptp, m_ptp*c_ptp, m_ptp*c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp};
+  // G4double ptp_l[ptp_a_entries] =
+  //   {m_ptp*c_ptp, m_ptp*c_ptp, m_ptp*c_ptp, m_ptp*c_ptp, m_ptp*c_ptp, m_ptp*c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp, c_ptp};
+  G4double ptp_l[ptp_a_entries] = {0};
+  for (int i = 0; i < ptp_a_entries; i++) { ptp_l[i] = m_ptp*c_ptp; }
 
   // Set refraction and absorption energy range and parameters
 

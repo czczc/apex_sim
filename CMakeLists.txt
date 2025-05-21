@@ -1,5 +1,5 @@
 # Setup the project
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.10 FATAL_ERROR)
 project(apex_sim)
 
 # Find Geant4 package, activating all available UI and Vis drivers by default

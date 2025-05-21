@@ -13,7 +13,7 @@
 
 LArDetectorConstruction::LArDetectorConstruction()
   :DetectorConstruction(),
-  fScYield(100)
+  fScYield(20000)
 {
   G4cout << "LArDetectorConstruction() called" << G4endl;
 
@@ -92,6 +92,36 @@ void LArDetectorConstruction::UpdateMaterials()
   acrylic_pt->AddProperty("RINDEX", acrylic_photonEnergy, acrylic_rindex, nEntries_acrylic);
   G4cout << "--> Added RINDEX property (1.49) to facrylic." << G4endl;
   // ----------------------------------------
+// --- Add RINDEX property for Mylar ---
+  G4cout << "LArDetectorConstruction: Updating Mylar Material Properties" << G4endl;
+  if (!fMylar) {
+      G4Exception("LArDetectorConstruction::UpdateMaterials", "NoMylarMat", FatalException,
+                  "fMylar material pointer is null. Make sure DefineMaterials() in base class was successful.");
+      // return; // No return here, might want to continue updating other materials if possible
+  } else {
+      G4MaterialPropertiesTable* mylar_pt = fMylar->GetMaterialPropertiesTable();
+      if (!mylar_pt) {
+          // If mylar exists but has no properties table, create one
+          mylar_pt = new G4MaterialPropertiesTable();
+          fMylar->SetMaterialPropertiesTable(mylar_pt);
+          G4cout << "--> Created new MaterialPropertiesTable for fMylar." << G4endl;
+      }
+
+      // Define energy points for RINDEX (use a simple range for constant RINDEX)
+      // Placeholder value - consult material data for accurate RINDEX if needed.
+      const G4int nEntries_mylar = 2;
+      G4double mylar_photonEnergy[nEntries_mylar] = { 1.0*eV, 10.0*eV }; // Example energy range
+      G4double mylar_rindex[nEntries_mylar] = { 1.65, 1.65 }; // Placeholder constant RINDEX for Mylar
+
+      // Check if RINDEX already exists before adding
+      if (!mylar_pt->GetProperty("RINDEX")) {
+          mylar_pt->AddProperty("RINDEX", mylar_photonEnergy, mylar_rindex, nEntries_mylar);
+          G4cout << "--> Added RINDEX property (~1.65) to fMylar." << G4endl;
+      } else {
+          G4cout << "--> RINDEX property already exists for fMylar." << G4endl;
+      }
+  }
+  // ----------------------------------------
 
 }
 
@@ -142,6 +172,36 @@ void LArDetectorConstruction::ConstructSDandField()
   } else {
      G4cerr << "!!! WARNING: Logical Volume 'ArapucaShort' not found in ConstructSDandField!" << G4endl;
   }
+// --- Define and attach Cathode Optical Surface ---
+  G4cout << "--> Defining and attaching Cathode Optical Surface..." << G4endl;
+  G4LogicalVolume* logicCathode = lvStore->GetVolume("Cathode");
+  if (logicCathode) {
+      G4OpticalSurface* CathodeSurface = new G4OpticalSurface("CathodeSurface");
+      CathodeSurface->SetType(dielectric_metal);
+      CathodeSurface->SetModel(unified);
+      CathodeSurface->SetFinish(ground); // Assuming similar finish to anode
+      CathodeSurface->SetSigmaAlpha(0.0*deg);
+
+      // Use same energy points and reflectivity as Anode from DetectorConstruction.cc
+      const G4int nEntries_cathode = 8;
+      G4double Cathode_PhotonEnergy[nEntries_cathode] =
+        { 2.5*eV, 5.0*eV, 7.0*eV, 7.5*eV, 8.0*eV, 9.0*eV, 9.5*eV, 10.136*eV};
+      G4double Cathode_r[nEntries_cathode] = {0.20, 0.20, 0.20, 0.20, 0.0, 0.0, 0.0, 0.0}; // Same as Anode_r
+      G4double Cathode_e[nEntries_cathode] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; // Same as Anode_e
+
+      G4MaterialPropertiesTable* CathodeSurface_pt = new G4MaterialPropertiesTable();
+      CathodeSurface_pt->AddProperty("REFLECTIVITY", Cathode_PhotonEnergy, Cathode_r, nEntries_cathode);
+      CathodeSurface_pt->AddProperty("EFFICIENCY", Cathode_PhotonEnergy, Cathode_e, nEntries_cathode);
+
+      CathodeSurface->SetMaterialPropertiesTable(CathodeSurface_pt);
+
+      new G4LogicalSkinSurface("CathodeSkinSurface", logicCathode, CathodeSurface);
+      G4cout << "--> Attached Optical Surface to Logical Volume: Cathode" << G4endl;
+
+  } else {
+       G4cerr << "!!! WARNING: Logical Volume 'Cathode' not found when trying to attach optical surface!" << G4endl;
+  }
+  // ---------------------------------------------
 
   // Note: We are assigning the *same* SD instance to both logical volumes.
   // The SensitiveDetector class will need to handle hits from both types

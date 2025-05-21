@@ -76,5 +76,5 @@
 
 # /tracking/verbose 1
 
-
+/persistency/gdml/add_pointers false
 # /persistency/gdml/write geometry.gdml
