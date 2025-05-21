@@ -35,28 +35,28 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory* )
   G4double t = point->GetGlobalTime();
   G4double wlen = 1239.841939*eV/momPhoton.mag(); // wavelength in nm.
 
-  man->FillNtupleIColumn(0, 0, evt);
-  man->FillNtupleDColumn(0, 1, posPhoton[0]);
-  man->FillNtupleDColumn(0, 2, posPhoton[1]);
-  man->FillNtupleDColumn(0, 3, posPhoton[2]);
-  man->FillNtupleDColumn(0, 4, t);
-  man->FillNtupleDColumn(0, 5, wlen);
-  man->FillNtupleIColumn(0, 6, pdg);
+  // man->FillNtupleIColumn(0, 0, evt);
+  // man->FillNtupleDColumn(0, 1, posPhoton[0]);
+  // man->FillNtupleDColumn(0, 2, posPhoton[1]);
+  // man->FillNtupleDColumn(0, 3, posPhoton[2]);
+  // man->FillNtupleDColumn(0, 4, t);
+  // man->FillNtupleDColumn(0, 5, wlen);
+  // man->FillNtupleIColumn(0, 6, pdg);
+  // man->AddNtupleRow(0);
 
-  man->AddNtupleRow(0);
-
-  G4double ara_eff = 0.02;
+  // G4double ara_eff = 0.02;
+  G4double ara_eff = 1;
   if(pdg == -22 && G4UniformRand() < ara_eff) {
     auto vol = point->GetTouchable()->GetVolume();
     auto posDet = vol->GetTranslation();
     // G4cout << "hit sd" << vol->GetName() << " @" << posDet 
     //     << ", " << aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() 
     //     << G4endl;
-    man->FillNtupleIColumn(1, 0, evt);
-    man->FillNtupleDColumn(1, 1, posDet[0]);
-    man->FillNtupleDColumn(1, 2, posDet[1]);
-    man->FillNtupleDColumn(1, 3, posDet[2]);
-    man->FillNtupleDColumn(1, 4, t);
+    man->FillNtupleIColumn(2, 0, evt);
+    man->FillNtupleDColumn(2, 1, posDet[0]);
+    man->FillNtupleDColumn(2, 2, posDet[1]);
+    man->FillNtupleDColumn(2, 3, posDet[2]);
+    man->FillNtupleDColumn(2, 4, t);
     man->AddNtupleRow(1); 
   }
 

@@ -1,10 +1,11 @@
 #include "PrimaryGeneratorAction.hh"
 
 #include "G4SystemOfUnits.hh"
-#include "G4ThreeVector.hh"
+// G4ThreeVector.hh is included via PrimaryGeneratorAction.hh
 #include "G4Event.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleGun.hh"
+#include "G4ParticleDefinition.hh" // Added for GetPDGEncoding()
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
 {
@@ -20,6 +21,12 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   fParticleGun->SetParticleEnergy(5. * MeV);
   fParticleGun->SetParticlePosition(G4ThreeVector(0., -3.0*m, 0.));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1., 0., 0.));
+
+  // Store primary particle properties
+  fPrimaryPDG = fParticleGun->GetParticleDefinition()->GetPDGEncoding();
+  fPrimaryEnergy = fParticleGun->GetParticleEnergy();
+  fPrimaryPosition = fParticleGun->GetParticlePosition();
+  fPrimaryMomentumDirection = fParticleGun->GetParticleMomentumDirection();
 }
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()

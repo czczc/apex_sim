@@ -1,31 +1,29 @@
 #include "SteppingAction.hh"
 
-#include "G4SystemOfUnits.hh"
-#include "G4SteppingManager.hh"
+// Required Headers
+#include "G4RunManager.hh"
+#include "G4OpticalPhoton.hh"
+#include "G4VProcess.hh"
+#include "G4Track.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4SystemOfUnits.hh" // Already present
+#include "G4EventManager.hh"
+#include "G4Event.hh"
 
-#include "RunAction.hh"
-#include "EventAction.hh"
-#include "DetectorConstruction.hh"
-#include "G4AnalysisManager.hh"
+#include "G4SteppingManager.hh" // Already present
 
-#include "G4PhysicalVolumeStore.hh"
+#include "RunAction.hh" // Already present
+#include "EventAction.hh" // Already present
+#include "DetectorConstruction.hh" // Already present
+#include "G4AnalysisManager.hh" // Already present
+
+#include "G4PhysicalVolumeStore.hh" // Already present, might not be needed for this specific logic
 
 
 SteppingAction::SteppingAction(RunAction* run, DetectorConstruction* det)
   :fRun(run),fDetector(det)
 { 
-
-  // //Get name of volumes excluding repetitions 
-  // std::string avname="";
-  // G4PhysicalVolumeStore* pvols = G4PhysicalVolumeStore::GetInstance();
-  // for(int i=0; i<(int)pvols->size(); i++){
-  //   //G4cout << ((*pvols)[i])->GetName() << G4endl;
-  //     avname = ((*pvols)[i])->GetName();
-  //     if(!(std::find(vname.begin(),vname.end(),avname) != vname.end())){
-	// vname.push_back(avname);
-  //     }
-  // }
-
+  // Constructor remains the same
 }
 
 SteppingAction::~SteppingAction()
@@ -35,111 +33,69 @@ SteppingAction::~SteppingAction()
 
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 { 
-   // Analysis manager
-  
   G4AnalysisManager* man = G4AnalysisManager::Instance();
-  
-  // man->FillNtupleIColumn(1,0,fRun->GetNumEvent()+fevt);
-  // man->FillNtupleIColumn(1,1,aStep->GetTrack()->GetDynamicParticle()->GetPDGcode());
-  // man->FillNtupleIColumn(1,2,aStep->GetTrack()->GetTrackID());
-  // man->FillNtupleIColumn(1,3,aStep->GetTrack()->GetParentID());
-  // man->FillNtupleDColumn(1,4,aStep->GetTrack()->GetPosition().x()/nm);
-  // man->FillNtupleDColumn(1,5,aStep->GetTrack()->GetPosition().y()/nm);
-  // man->FillNtupleDColumn(1,6,aStep->GetTrack()->GetPosition().z()/nm);
-  // man->FillNtupleDColumn(1,7,aStep->GetTotalEnergyDeposit()/eV);
-  // man->FillNtupleDColumn(1,8,aStep->GetTrack()->GetKineticEnergy()/eV);
+  G4Track* track = aStep->GetTrack();
 
-  const G4VProcess* pds = aStep->GetPostStepPoint()->GetProcessDefinedStep();
-  G4String processName = "unknown"; 
-  if(pds) processName = pds->GetProcessName();
-
-  // G4cout << "evt: "<< fRun->GetNumEvent(); 
-  // G4cout << ", pdg: " << aStep->GetTrack()->GetDynamicParticle()->GetPDGcode();
-  if (processName == "eIoni" || processName=="NoProcess" || processName=="unknown"
-    || processName=="OpRayleigh" || processName=="Transportation" 
-    || processName=="OpAbsorption" || processName=="Cerenkov") return;
-  // G4cout << "id: " << aStep->GetTrack()->GetTrackID() 
-  //   << ", mid: " << aStep->GetTrack()->GetParentID()
-  //   << ", " << aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()
-  //   << ", DE: " << aStep->GetTotalEnergyDeposit()/MeV
-  //   << ", process: " << processName 
-  //   << "\n";
-  // G4cout << ", x:   " << aStep->GetTrack()->GetPosition().x()/um;
-  // G4cout << ", y:   " << aStep->GetTrack()->GetPosition().y()/um;
-  // G4cout << ", z:   " << aStep->GetTrack()->GetPosition().z()/um;
-  // G4cout << ", de:  " << aStep->GetTotalEnergyDeposit()/eV;
-  // G4cout << ", e:   " << aStep->GetTrack()->GetKineticEnergy()/eV;
-
-  //   if(aStep->GetTrack()->GetNextVolume()!=0){
-  //     G4cout << ", vol: " << aStep->GetTrack()->GetNextVolume()->GetName();
+  // Check if the particle is an optical photon
+  if (track->GetDefinition()->GetParticleName() == "opticalphoton")
+  {
+    // Record info at the creation of the optical photon (first step)
+    if (track->GetCurrentStepNumber() == 1)
+    {
+      G4int evtID = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
       
-  //     std::pair<int,int> aux = VolumeCode( aStep->GetTrack()->GetNextVolume()->GetName());
-
-  //     G4int hv_id = man->GetH1Id("hv"); // get histogram int identifier, searched by histogram name
-  //     man->FillH1(hv_id,aux.first); // fill histogram at thos volume code value,
-
-  //     man->FillNtupleIColumn(1,9,aux.first);
-  //     man->FillNtupleIColumn(1,10,aStep->GetPostStepPoint()->GetTouchableHandle()->GetReplicaNumber());
-  //     G4cout << " " << aux.first;
-  //     G4cout << " " << aStep->GetPostStepPoint()->GetTouchableHandle()->GetReplicaNumber();
-  //     //if(aStep->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetName()!="World"){
-  //     if(aStep->GetPostStepPoint()->GetTouchableHandle()->GetVolume()->GetName()!=wname.c_str()){
-	// man->FillNtupleIColumn(1,11,aux.second);
-	// man->FillNtupleIColumn(1,12,aStep->GetPostStepPoint()->GetTouchableHandle()->GetReplicaNumber(1));
-	// G4cout << " " << aStep->GetPostStepPoint()->GetTouchableHandle()->GetVolume(1)->GetName();
-	// G4cout << " " << aStep->GetPostStepPoint()->GetTouchableHandle()->GetReplicaNumber(1);
-	// G4cout << " " << aux.second;
-  //     }else{
-	// man->FillNtupleIColumn(1,11,aux.second);
-	// man->FillNtupleIColumn(1,12,0);
-	// G4cout << " " << "OutOfWorld";
-	// G4cout << " " << aux.second;
-  //       G4cout << " " << 0;
-       
-  //     }
-  //   }else{
-  //     std::pair<int,int> aux = VolumeCode("OutOfWorld");
-  //     G4cout << ", vol: OutOfWorld";
-  //     G4cout << " " << aux.first;
-  //     G4cout << " " << 0;
-  //     G4cout << " " << "OutOfWorld";
-  //     G4cout << " " << aux.second;
-  //     G4cout << " " << 0;
-  //     G4int hv_id = man->GetH1Id("hv");
-  //     man->FillH1(hv_id,aux.first);      
-  //     man->FillNtupleIColumn(1,9,aux.first);
-  //     man->FillNtupleIColumn(1,10,0);
-  //     man->FillNtupleIColumn(1,11,aux.second);
-  //     man->FillNtupleIColumn(1,12,0);
-  //   }     
-    
-  //   if(aStep->GetPostStepPoint()->GetProcessDefinedStep()!=NULL){
-  //     std::string name = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName();
-  //     G4cout << ", proccess: " << name << G4endl;
-  //     p = imap.find(name);
-  //     if(p!=imap.end()){
-	// //###G4cout << "repeated" <<" "<< p->first <<" "<< p->second << G4endl;
-	// man->FillNtupleIColumn(1,13,p->second);
-  //     }
-  //     if(p==imap.end()){
-	// idx++;
-	// std::pair<std::string, int> aux(name,idx);
-	// imap.insert(aux);
-	// man->FillNtupleIColumn(1,13,idx);
-  //     }
-
-  //     if(eveti!=fRun->GetNumEvent()){
-	// eveti=fRun->GetNumEvent();
-	// for(p=imap.begin(); p!=imap.end(); p++){
-	//   G4cout << p->first << " " << p->second << G4endl;
-	// }
-	// G4cout << "n: " << idx << G4endl;
-  //     }
+      G4ThreeVector pos = track->GetPosition();
+      G4double time = track->GetGlobalTime();
       
-  //   }else{
-  //     G4cout << ", proccess: User Limit" << G4endl;
-  //     man->FillNtupleIColumn(1,13,-1);
-  //   }
-  //   //man->AddNtupleRow(1);
-  //   //G4cout << "Passed track" << G4endl;
+      // Calculate wavelength from energy. Ensure h_Planck * c has correct units for desired wavelength unit.
+      // (1.23984193 eV*um) is h*c in eV*um. If energy is in MeV, convert.
+      // Geant4 standard energy unit is MeV.
+      G4double energy = track->GetKineticEnergy() / eV; // Convert MeV (default) to eV for the formula
+      G4double wavelength = 0.0; // Default to 0 if energy is zero
+      if (energy > 0) {
+        wavelength = (1.23984193 /* eV*um */) / energy * 1000; // Convert um to nm
+      }
+
+      G4ThreeVector momDir = track->GetMomentumDirection();
+      G4ThreeVector pol = track->GetPolarization();
+
+      G4String creatorProcessName = "primary"; // Default for primary particles
+      const G4VProcess* creatorProcess = track->GetCreatorProcess();
+      if (creatorProcess) {
+        creatorProcessName = creatorProcess->GetProcessName();
+      }
+
+      G4int trackID = track->GetTrackID();
+      G4int parentID = track->GetParentID();
+      G4int pdgCode = track->GetDefinition()->GetPDGEncoding();
+
+      // Fill "OpticalPhotons" Ntuple (ID 1)
+      // Column order: evtID, x, y, z, t, wlen, pdg, mom_x, mom_y, mom_z, pol_x, pol_y, pol_z, creator_process, track_id, parent_id
+      man->FillNtupleIColumn(1, 0, evtID);
+      man->FillNtupleDColumn(1, 1, pos.x() / mm); 
+      man->FillNtupleDColumn(1, 2, pos.y() / mm);
+      man->FillNtupleDColumn(1, 3, pos.z() / mm);
+      man->FillNtupleDColumn(1, 4, time / ns);    
+      man->FillNtupleDColumn(1, 5, wavelength);  // Already in nm
+      man->FillNtupleIColumn(1, 6, pdgCode);
+      man->FillNtupleDColumn(1, 7, momDir.x());
+      man->FillNtupleDColumn(1, 8, momDir.y());
+      man->FillNtupleDColumn(1, 9, momDir.z());
+      man->FillNtupleDColumn(1, 10, pol.x());
+      man->FillNtupleDColumn(1, 11, pol.y());
+      man->FillNtupleDColumn(1, 12, pol.z());
+      man->FillNtupleSColumn(1, 13, creatorProcessName);
+      man->FillNtupleIColumn(1, 14, trackID);
+      man->FillNtupleIColumn(1, 15, parentID);
+      
+      man->AddNtupleRow(1);
+    }
+  }
+
+  // The existing complex logic for filling a different Ntuple 1 has been effectively
+  // removed by replacing the content of UserSteppingAction with the new logic above.
+  // If any part of the old logic needs to be preserved for other purposes (e.g. different Ntuples),
+  // it would need to be re-added carefully, ensuring no Ntuple ID conflicts.
+  // The specific filtering `if (processName == "eIoni" || ... ) return;` is also removed
+  // as it was part of the old logic.
 }

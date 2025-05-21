@@ -3,5 +3,5 @@
 
 # /tracking/storeTrajectory 1
 /gun/particle e-
-/gun/energy 100 MeV
+/gun/energy 5 MeV
 /run/beamOn 2
